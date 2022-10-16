@@ -37,8 +37,8 @@ public class Post_servlet extends HttpServlet {
 		else {
 			list = dao.getAllPostByCategoryId(Cid);
 		}
-		request.setAttribute("list",list);
-		request.getRequestDispatcher("/index.jsp").forward(request, response);
+		request.setAttribute("listPost",list);
+		request.getRequestDispatcher("/Home.jsp").forward(request, response);
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
