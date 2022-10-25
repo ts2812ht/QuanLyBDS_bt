@@ -143,7 +143,7 @@
         
     }
     $("#logout-btn").click(function() {
-        window.location.href = "/QuanLyBDS_bt/";
+        window.location.href = "/QuanLyBDS_bt/Admin.jsp";
         }
     );
 
