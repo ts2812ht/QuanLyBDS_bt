@@ -1,6 +1,7 @@
 package Servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -8,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import Dto.PostDTO;
 import Jdbc.PostImpl;
@@ -36,10 +38,27 @@ public class MainPost_servlet extends HttpServlet {
 		String Pid = null;
 		Pid = request.getParameter("Pid");
 		PostImpl dao = new PostImpl();
-		PostDTO post = dao.getPostById(Pid);
+		PostDTO post = null;
+		try {
+			post = dao.getPostById(Pid);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		HttpSession session = request.getSession();
+		if (session.isNew()) {
+			PostImpl Postdao = new PostImpl();
+			try {
+				Postdao.AddView(post.getUser_id());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		request.setAttribute("post",post);
-		request.getRequestDispatcher("/Mainpost.jsp").forward(request, response);
+		request.getRequestDispatcher("/Post_focus.jsp").forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

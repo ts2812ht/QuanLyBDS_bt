@@ -11,9 +11,31 @@ public class UserDTO {
 	private String avatar;
 	private int tinhtrang;
 	
+	
+	
+	public UserDTO(int id, String name, String email, String password, String phone) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.phone = phone;
+	}
+
+
 	public UserDTO() {
 		// TODO Auto-generated constructor stub
 	}
+	
+
+	public UserDTO(String name, String username, String password, String phone) {
+		super();
+		this.name = name;
+		this.username = username;
+		this.password = password;
+		this.phone = phone;
+	}
+
 
 	public UserDTO(String name, String username, String email, String password, String phone, String avatar) {
 		super();

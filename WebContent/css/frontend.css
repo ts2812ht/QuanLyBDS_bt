@@ -2930,7 +2930,7 @@ body.post #breadcrumb ol > li:last-of-type a {
   background-size: contain;
 }
 .user-welcome .dropdown-menu-item.nap-tien i {
-  background: url(../images/dashboard-payment.svg) center no-repeat;
+  background: url(../images/icons8-password-48.png) center no-repeat;
   background-size: contain;
 }
 .user-welcome .dropdown-menu-item.lich-su-nap-tien i {
@@ -2954,9 +2954,9 @@ body.post #breadcrumb ol > li:last-of-type a {
   background-size: contain;
 }
 #top-logo {
-  width: 240px;
+  width: 220px;
   height: 70px;
-  background: url(../images/logo-phongtro.svg) center no-repeat;
+  background: url(../images/Logo.svg) center space;
   background-size: contain;
   text-indent: -9999999px;
   display: block;
@@ -2999,7 +2999,7 @@ body.fix-body #navbar-menu {
   display: flex;
   align-items: center;
   height: 40px;
-  padding: 0 12px;
+  padding: 0 40px;
   color: #fff;
   text-decoration: none;
   font-weight: 700;

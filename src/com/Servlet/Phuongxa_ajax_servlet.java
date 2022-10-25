@@ -1,6 +1,8 @@
 package Servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -8,23 +10,23 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import Dto.PostDTO;
-import Dto.UserDTO;
-import Jdbc.PostImpl;
+import com.google.gson.Gson;
+
+import Dto.PhuongxaDTO;
+import Jdbc.PhuongxaImpl;
 
 /**
- * Servlet implementation class MyPost_servlet
+ * Servlet implementation class Phuongxa_ajax_servlet
  */
-@WebServlet("/MyPost_servlet")
-public class MyPost_servlet extends HttpServlet {
+@WebServlet("/Phuongxa_ajax_servlet")
+public class Phuongxa_ajax_servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public MyPost_servlet() {
+    public Phuongxa_ajax_servlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -34,18 +36,23 @@ public class MyPost_servlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;chartset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		
-		HttpSession session = request.getSession();
-		UserDTO User = (UserDTO) session.getAttribute("user");  
-		
-		PostImpl dao = new PostImpl();
-		
-		List<PostDTO> list = null;
-		
-		list = dao.getAllPostbyUserId(User.getId());
-		
-		request.setAttribute("list",list);
-		request.getRequestDispatcher("/MyPost.jsp").forward(request, response);
+		try (PrintWriter out = response.getWriter()) {
+			
+			
+			PhuongxaImpl dao = new PhuongxaImpl();
+			String did = request.getParameter("id");
+			try {
+				List <PhuongxaDTO> list = dao.getPhuongxaByDistrictId(did);
+				Gson json = new Gson();
+				String PhuongxaList = json.toJson(list);
+				response.getWriter().write(PhuongxaList);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+        }
 	}
 
 	/**

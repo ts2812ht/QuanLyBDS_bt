@@ -42,6 +42,7 @@ public class GetCategory extends HttpServlet {
 			// TODO: handle exception
 		}
 		request.setAttribute("listCategory",list);
+		request.setAttribute("tag",Cid);
 		request.getRequestDispatcher("/Header_home.jsp").forward(request, response);
 	}
 

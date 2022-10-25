@@ -9,7 +9,7 @@
 <jsp:include page="Header.jsp"></jsp:include>
 
 <hr>
-<form action="NewPost_servlet" method="post" enctype="multipart/form-data">
+<form action="TaoBaiDang_servlet" method="post" enctype="multipart/form-data">
 	<br>  
 	 <label for="name"><b>Tên hiển thị(*):</b></label><br>
     <input type="text"  name="name"><br>
@@ -19,7 +19,7 @@
 	<input type="text" name="Title" style="width:400px"> <br> <br>
 	
 	<label for="Category"><b>Category(*):</b></label><br>
-	<input type="text" name="Category"> <br> <br>
+	<input type="text" name="district_id"> <br> <br>
 	<label for="District"><b>Quận/Huyện(*):</b></label><br> 
 	<input type="text" name="District"><br> 
 	<label for="Phuongxa"><b>Phường/xã:</b></label><br>

@@ -38,18 +38,33 @@ public class Login_servlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;chartset=UTF-8");
-		String username, password;
-		username = request.getParameter("uname");
-		password = request.getParameter("psw");
+		String username, password,facebook;
+		username = request.getParameter("username");
+		password = request.getParameter("password");
+		String userId = request.getParameter("userId");
 
 		UserImpl dao = new UserImpl();
 		UserDTO user = dao.getUserLogin(username,password);
 		
-		if (user.getUsername() == null) {
-			response.sendRedirect(request.getContextPath() + "/LoginForm.jsp");
+		if (userId == null) {
+			if (user.getUsername() == null) {
+				request.setAttribute("error","Sai tên đăng nhập hoặc mật khẩu");
+//				response.sendRedirect(request.getContextPath() + "/LoginForm.jsp");
+				request.getRequestDispatcher("/Dang_nhap.jsp").forward(request, response);
+			} else {
+				HttpSession session = request.getSession();
+				session.setAttribute("Login_user", user);
+				response.sendRedirect(request.getContextPath() +"/Post_servlet");
+			}
 		} else {
+			user = dao.getUserLogin(userId,userId);
+			if (user.getUsername() == null) {
+				String name = request.getParameter("name");
+				user = new UserDTO("",userId,userId,"");
+	            dao.register(user);
+			}
 			HttpSession session = request.getSession();
-			session.setAttribute("user", user);
+			session.setAttribute("Login_user", user);
 			response.sendRedirect(request.getContextPath() +"/Post_servlet");
 		}
 	}

@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,9 @@ import Jdbc.UserImpl;;
  * Servlet implementation class NewPost_servlet
  */
 @WebServlet("/NewPost_servlet")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 4, // 4MB
+					maxFileSize = 1024 * 1024 * 10, // 10MB
+					maxRequestSize = 1024 * 1024 * 50) // 50MB
 public class NewPost_servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -49,18 +53,19 @@ public class NewPost_servlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
         request.setCharacterEncoding("utf-8");
-        String url = "";
+        String url = "/Post_servlet";
         
-        String name = request.getParameter("name");
-        String title = request.getParameter("Title");
-        String category = request.getParameter("Category");
-        String district = request.getParameter("District");
-        String phuongxa = request.getParameter("Phuongxa");
-        String address = request.getParameter("Address");
-        String price = request.getParameter("Price");
-        String description = request.getParameter("Description");
-        String area = request.getParameter("Area");
-        String phone = request.getParameter("Phone");
+        String district_id = request.getParameter("district_id");
+        String phuongxa = request.getParameter("phuongxa");
+        String address = request.getParameter("dia_chi");
+        String category = request.getParameter("loai_chuyen_muc");
+        String title = request.getParameter("post_title");
+        String description = request.getParameter("description");
+        String user_id = request.getParameter("user_id");
+        String price = request.getParameter("price");
+        String area = request.getParameter("area");
+        String phone = request.getParameter("phone");
+        Part part = request.getPart("image");
 //        "ts1",		//title
 //		"asd",		//description
 //		20000,		//price
@@ -73,16 +78,36 @@ public class NewPost_servlet extends HttpServlet {
 //		"",			//phuongxa_id
 //		"0123456");	//phone
 
-//        
 
-        HttpSession session = request.getSession();
-		UserDTO User = (UserDTO) session.getAttribute("user");  
+    	PostImpl dao = new PostImpl();
+        try {
+        	PostDTO post = new PostDTO(
+        						title,		//title
+        						description,		//description
+        						Integer.parseInt(price),		//price
+        						Integer.parseInt(area),			//area
+        						address,		//address
+        						"",			//images
+        						user_id,		//user_id
+        						category,		//category_id
+        						district_id,			//district_id
+        						phuongxa,			//phuongxa_id
+        						phone);	//phone
+    		dao.NewPost(post);
+    	
+ 
+		String post_id = null;
+		//tạo thư mục lưu cho post
+		try {
+			post_id = dao.getLastPostIdByUserId(user_id);//lấy id post vừa tạo để thêm hình ảnh
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		//tạo thư mục lưu cho account
-		String idForder = "\\id"+ String.valueOf(User.getId());
+		String idForder = "id"+ post_id;
 		//Đường dẫn tới thư mục cần lưu
-		String fullSavePath = "D:\\Pro\\JavaOne\\QuanLyBDS_bt\\WebContent\\images\\post" 
-						+ File.separator + idForder;
+		String fullSavePath = "D:\\Pro\\JavaOne\\QuanLyBDS_bt\\WebContent\\uploads\\posts\\" + idForder;
 		// Tạo thư mục nếu nó không tồn tại.
 		File fileSaveDir = new File(fullSavePath);
 		if (!fileSaveDir.exists()) {
@@ -91,38 +116,37 @@ public class NewPost_servlet extends HttpServlet {
 		
 		String post_image = null;
 		
-		for (Part part : request.getParts()) {
-               String fileName = extractFileName(part);
-               if (fileName != null && fileName.length() > 0) {
-                   String filePath = fullSavePath + File.separator + fileName;
-                   part.write(filePath);
-                   post_image = "images/users/" + idForder + "/" + fileName;
-               }
-           }
+//		for (Part part : request.getParts()) {
+//               String fileName = extractFileName(part);
+//               if (fileName != null && fileName.length() > 0) {
+//                   String filePath = fullSavePath + File.separator + fileName;
+//                   part.write(filePath);
+//                   post_image = "uploads/posts/" + idForder + "/" + fileName;
+//               }
+//           }
+		String fileName = extractFileName(part);
+		if (fileName != null && fileName.length() > 0) {
+          String filePath = fullSavePath + "\\" + fileName;
+          part.write(filePath);
+          post_image = "uploads/posts/" + idForder + "/" + fileName;
+		}
+		
 		if (post_image == null) {
 			post_image = "images/test1.jpg";
 		}
-    	try {
-        	PostImpl dao = new PostImpl();
-        	PostDTO post = new PostDTO(
-        						title,		//title
-        						description,		//description
-        						Integer.parseInt(price),		//price
-        						Integer.parseInt(area),			//area
-        						address,		//address
-        						post_image,			//images
-        						String.valueOf(User.getId()),		//user_id
-        						category,		//category_id
-        						district,			//district_id
-        						phuongxa,			//phuongxa_id
-        						phone);	//phone
-    		dao.NewPost(post);
-    	} catch (SQLException e) {
-    		// TODO Auto-generated catch block
-    	}
+    	
+        try {
+			dao.UpdateImageById(post_image, post_id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         
-        RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
-        rd.forward(request, response);
+        } catch (SQLException e) {
+    		request.setAttribute("error","Nhập thiếu thông tin, vui lòng nhập lại");
+    	}
+		request.setAttribute("success","Đăng tin thành công, xem thông tin <a href=\"/Quan_ly_tin_servlet\">Quản Lý</a>");
+		request.getRequestDispatcher("/Dang_tin_moi.jsp").forward(request, response);
         
    }
 	private String extractFileName(Part part) {

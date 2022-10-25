@@ -1,5 +1,8 @@
 package Dto;
 
+import Jdbc.UserImpl;
+import Tool.TimeAgo;
+
 public class PostDTO {
 	private int id;
 	private String title;
@@ -14,10 +17,92 @@ public class PostDTO {
 	private String category_id;
 	private String district_id;
 	private String phuongxa_id;
+	private String locate;
 	private String approve;
 	private String phone;
 	private String create_at;
+	private String user_name;
+	private String user_image;
+	private String haft_description;
+	private String TimeAgo;
 	
+	
+
+
+	public String getTimeAgo() {
+		return TimeAgo;
+	}
+
+
+	public void setTimeAgo(String timeAgo) {
+		TimeAgo = timeAgo;
+	}
+
+
+	public String getHaft_description() {
+		return haft_description;
+	}
+
+
+	public void setHaft_description(String haft_description) {
+		this.haft_description = haft_description;
+	}
+
+
+	public String getLocate() {
+		return locate;
+	}
+
+
+	public void setLocate(String locate) {
+		this.locate = locate;
+	}
+	
+	public String getUser_image() {
+		if (this.user_image != null) {
+			return this.user_image;
+		} else if (user_id != null) {
+			setUser_Detail();
+			return user_image;
+		} else {
+			return null;
+		}
+	}
+	public String getUser_name() {
+		if (this.user_name != null) {
+			return this.user_name;
+		} else if (user_id != null) {
+			setUser_Detail();
+			return user_name;
+		} else {
+			return null;
+		}
+	}
+
+
+	public void setUser_Detail() {
+		if (this.user_id != null) {
+			UserImpl dao = new UserImpl();
+			this.user_name = dao.getNameUserbyId(this.user_id);
+			this.user_image = dao.getImageUserbyId(this.user_id);
+		}
+		
+		if (this.description != null) {
+			int end = description.length();
+			if (description.length() >= 115) {
+				end = 115;
+			}
+			this.haft_description =  description.substring(0, end);
+		}
+		
+		if (this.create_at != null) {
+			setTimeAgo(Tool.TimeAgo.Ca_TimeAgo(this.create_at));
+		}
+	}
+	
+
+
+
 	public PostDTO(int id, String title, String description, int price, int area, int count_view, String address,
 			String images, String user_id, String category_id, String district_id, String phuongxa_id, String approve,
 			String phone, String create_at) {
@@ -37,6 +122,7 @@ public class PostDTO {
 		this.approve = approve;
 		this.phone = phone;
 		this.create_at = create_at;
+		setUser_Detail();
 	}
 
 
@@ -57,6 +143,7 @@ public class PostDTO {
 		this.district_id = district_id;
 		this.phuongxa_id = phuongxa_id;
 		this.phone = phone;
+		setUser_Detail();
 	}
 
 
@@ -97,6 +184,7 @@ public class PostDTO {
 		this.category_id = category_id;
 		this.district_id = district_id;
 		this.phone = phone;
+		setUser_Detail();
 	}
 
 
@@ -152,6 +240,7 @@ public class PostDTO {
 		this.district_id = district_id;
 		this.approve = approve;
 		this.create_at = create_at;
+		setUser_Detail();
 	}
 
 	
@@ -250,10 +339,10 @@ public class PostDTO {
 	@Override
 	public String toString() {
 		return "PostDTO [id=" + id + ", title=" + title + ", description=" + description + ", price=" + price
-				+ ", area=" + area + ", count_view=" + count_view + ", address=" + address + ", latlng=" + latlng
-				+ ", images=" + images + ", user_id=" + user_id + ", category_id=" + category_id + ", district_id="
-				+ district_id + ", phuongxa_id=" + phuongxa_id + ", approve=" + approve + ", phone=" + phone
-				+ ", create_at=" + create_at + "]";
+				+ ", area=" + area + ", count_view=" + count_view + ", address=" + address + ", images=" + images
+				+ ", user_id=" + user_id + ", category_id=" + category_id + ", district_id=" + district_id
+				+ ", phuongxa_id=" + phuongxa_id + ", locate=" + locate + ", approve=" + approve + ", phone=" + phone
+				+ ", create_at=" + create_at + ", user_name=" + user_name + ", user_image=" + user_image + "]";
 	}
 	
 }

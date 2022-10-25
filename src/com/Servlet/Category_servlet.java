@@ -1,6 +1,7 @@
 package Servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -37,7 +38,14 @@ public class Category_servlet extends HttpServlet {
 		String Cid = null;
 		Cid = request.getParameter("Cid");
 		PostImpl dao = new PostImpl();
-		List<PostDTO> list = dao.getAllPostByCategoryId(Cid);
+		List<PostDTO> list = null;
+		try {
+			list = dao.getAllPostByCategoryId(Cid);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		request.setAttribute("list",list);
 		request.getRequestDispatcher("/index.jsp").forward(request, response);
 	}

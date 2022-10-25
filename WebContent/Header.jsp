@@ -19,8 +19,8 @@
    	<p style="color:red;"><span style=""><%out.print(user.getName()); %></span></p><br>
    	<a href="AccountDetail.jsp">Chỉnh sửa thông tin tài khoản</a><br>
    	<a href="MyPost_servlet">Bài đăng của tôi</a><br>
-	<a href="Logout">Logout</a><%}%>
-   	<% if (user == null) {%>
+	<a href="Logout">Logout</a><%}
+	else if (user == null) {%>
    		<a href="LoginForm.jsp">Đăng nhập</a>
 		<a href="RegisterForm.jsp">Đăng kí</a><%}%>
 </div>

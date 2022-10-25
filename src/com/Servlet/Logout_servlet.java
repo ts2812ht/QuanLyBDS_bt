@@ -29,7 +29,7 @@ public class Logout_servlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;chartset=UTF-8");
 		HttpSession session = request.getSession();
-		session.removeAttribute("user");
+		session.removeAttribute("Login_user");
 		response.sendRedirect(request.getContextPath() +"/Post_servlet");
 	}
 
